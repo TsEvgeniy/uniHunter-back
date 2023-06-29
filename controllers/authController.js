@@ -19,7 +19,7 @@ const handleErrors = err => {
         errors.email = 'This email is not registered';
     }
     if (err.message === 'incorrect password') {
-        errors.email = 'This password is incorrect';
+        errors.password = 'This password is incorrect';
     }
     if (err.code === 11000) {
         errors.email = 'This email is already registered';
@@ -64,6 +64,8 @@ module.exports.login_get = (req, res) => {
 module.exports.login_post = async (req, res) => {
     const {email, password} = req.body;
 
+    console.log(email, password);
+
     try {
         const user = await User.login(email, password);
         const token = createToken(user._id);
@@ -81,12 +83,51 @@ module.exports.logout_get = (req, res) => {
     res.send({});
 }
 
-module.exports.update_profile = async (req, res) => {
-    const {uni_name} = req.body;
+module.exports.profile_update = async (req, res) => {
+    const {
+        uni_name, 
+        city, 
+        coutry, 
+        date_of_birth, 
+        phone_number,
+        citizenship,
+        gender,
+        experience,
+        faculty,
+        specialization,
+        name_of_diploma,
+        year_of_graduation,
+        courses,
+        languages,
+        recommendations,
+        hobbies
+    } = req.body;
     const user = await User.findById({_id: res.locals.user.id});
-    user.set({uni_name});
+    user.set({
+        uni_name, 
+        city,
+        coutry,
+        date_of_birth,
+        phone_number,
+        citizenship,
+        gender,
+        experience,
+        faculty,
+        specialization,
+        name_of_diploma,
+        year_of_graduation,
+        courses,
+        languages,
+        recommendations,
+        hobbies
+    });
 
     user.save()
 
     res.send({user})
+}
+
+module.exports.profile_get = async(req, res) => {
+    const userProfile = await User.findById({_id: res.locals.user.id});
+    res.send(userProfile);
 }

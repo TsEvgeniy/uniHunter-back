@@ -70,3 +70,23 @@ module.exports.logout_get = (req, res) => {
     res.cookie('jwt', '', {maxDate: 1});
     res.send({});
 }
+
+module.exports.profile_update = async (req, res) => {
+    const {
+        name,
+        surname,
+        phone_number,
+        name_of_company,
+        sphere_of_activity,
+        desc
+    } = req.body;
+    const company = await Company.findById({_id: res.locals.company.id});
+
+    company.set({
+        name, surname, phone_number, name_of_company, sphere_of_activity, desc
+    });
+
+    company.save()
+
+    res.send({company})
+}

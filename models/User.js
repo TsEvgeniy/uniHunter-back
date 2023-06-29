@@ -23,12 +23,30 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter your surname"]
     },
-    uni_name: { type: String}
+    city: { type: String},
+    coutry: {type: String},
+    date_of_birth: { type: String},
+    phone_number: { type: String},
+    citizenship: { type: String},
+    gender: { type: String},
+    experience: { type: String},
+    uni_name: { type: String},
+    faculty: { type: String},
+    specialization: {type: String },
+    name_of_diploma: {type: String},
+    year_of_graduation: { type: String},
+    courses: {type: String},
+    languages: { type: String},
+    recommendations: { type: String},
+    hobbies: { type: String}
 });
 
 userSchema.pre('save', async function(next) {
-    const salt = await bcrypt.genSalt();
+    if(this.isModified('password')){
+        const salt = await bcrypt.genSalt();
     this.password = await bcrypt.hash(this.password, salt);
+    next();
+    }
     next();
 });
 

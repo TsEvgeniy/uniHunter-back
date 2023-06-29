@@ -14,13 +14,22 @@ const companySchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter a password"],
         minlength: [6, "Minimum password length is 6"]
-    }
+    },
+    name: { type: String},
+    surname: {type: String},
+    phone_number: { type: String},
+    name_of_company: {type: String},
+    sphere_of_activity: {type: String},
+    desc: { type: String}
 });
 
 companySchema.pre('save', async function(next) {
-    const salt = await bcrypt.genSalt();
+    if(this.isModified('password')){
+        const salt = await bcrypt.genSalt();
     this.password = await bcrypt.hash(this.password, salt);
     next();
+}
+next();
 });
 
 companySchema.statics.login = async function(email, password) {
