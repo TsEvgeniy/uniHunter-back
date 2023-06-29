@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
     surname: {
         type: String,
         required: [true, "Please enter your surname"]
-    }
+    },
+    uni_name: { type: String}
 });
 
 userSchema.pre('save', async function(next) {

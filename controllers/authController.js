@@ -80,3 +80,13 @@ module.exports.logout_get = (req, res) => {
     res.cookie('jwt', '', {maxDate: 1});
     res.send({});
 }
+
+module.exports.update_profile = async (req, res) => {
+    const {uni_name} = req.body;
+    const user = await User.findById({_id: res.locals.user.id});
+    user.set({uni_name});
+
+    user.save()
+
+    res.send({user})
+}
