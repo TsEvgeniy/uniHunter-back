@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const Company = require('../models/Company');
 const jwt = require('jsonwebtoken');
 
 const maxDate = 3 * 24 * 60 * 60;
@@ -25,7 +25,7 @@ const handleErrors = err => {
         errors.email = 'This email is already registered';
         return errors;
     }
-    if (err.message.includes('user validation failed')) {
+    if (err.message.includes('company validation failed')) {
         Object.values(err.errors).forEach(({properties}) => {
             errors[properties.path] = properties.message;
         })
@@ -34,22 +34,16 @@ const handleErrors = err => {
     return errors;
 }
 
-module.exports.signup_get = (req, res) => {
-    res.send({message: 'signup_get'})
-}
-
 module.exports.signup_post = async (req, res) => {
-    const { email, password, name, surname } = req.body;
+    const { email, password } = req.body;
     try {
-        const user = await User.create({
-            email, password, name, surname
+        const company = await Company.create({
+            email, password
         });
-
-        const token = createToken(user._id);
+        const token = createToken(company._id);
 
         res.cookie('jwt', token, { httpOnly: true, maxDate });
-
-        res.status(201).json({user: user._id});
+        res.status(201).json({company: company._id});
     } catch(err) {
         console.log(err);
         const errors = handleErrors(err);
@@ -57,19 +51,15 @@ module.exports.signup_post = async (req, res) => {
     }
 }
 
-module.exports.login_get = (req, res) => {
-    res.send({message: 'login_get'})
-}
-
 module.exports.login_post = async (req, res) => {
     const {email, password} = req.body;
 
     try {
-        const user = await User.login(email, password);
-        const token = createToken(user._id);
+        const company = await Company.login(email, password);
+        const token = createToken(company._id);
 
         res.cookie('jwt', token, { httpOnly: true, maxDate });
-        res.status(200).json({user: user._id})
+        res.status(200).json({company: company._id})
     } catch (err) {
         const errors = handleErrors(err);
         res.status(400).json({errors});
